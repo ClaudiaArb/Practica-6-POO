@@ -1,38 +1,49 @@
-import * as readline from "readline";
+//Sistema de Alerta de Emergencia:
+//El edificio tiene diferentes dispositivos de seguridad (Alarmas, Aspersores, Luces). Cuando
+//se detecta una emergencia, el sistema debe activar todos los dispositivos registrados sin
+//importar de qué tipo sean.
 
-class Termostato {
-    private temperatura: number;
 
-    constructor(temp: number) {
-        this.temperatura = temp;
-    }
-
-    get tempActual(): string {
-        return this.temperatura + "°C";
-    }
-
-    set tempActual(valor: number) {
-        if (valor > 25) {
-            this.temperatura = 25;
-            console.log("Valor fuera de rango, ajustado a 25°C");
-        } else if (valor < 18) {
-            this.temperatura = 18;
-            console.log("Valor fuera de rango, ajustado a 18°C");
-        } else {
-            this.temperatura = valor;
-        }
-    }
+interface DispositivoSeguridad {
+  nombre: string;
+  activar(): void;
 }
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+class Alarma implements DispositivoSeguridad {
+  nombre = "Alarma";
+  activar(): void {
+    console.log(" ¡SONIDO DE EMERGENCIA ACTIVADO!");
+  }
+}
 
-const t = new Termostato(20);
+class Aspersor implements DispositivoSeguridad {
+  nombre = "Aspersor";
+  activar(): void {
+    console.log("¡ROCIANDO AGUA!");
+  }
+}
 
-rl.question("Ingresa la temperatura: ", function(respuesta) {
-    t.tempActual = parseInt(respuesta);
-    console.log("Temperatura actual: " + t.tempActual);
-    rl.close();
-});
+class Luz implements DispositivoSeguridad {
+  nombre = "Luz";
+  activar(): void {
+    console.log(" ¡LUCES DE EMERGENCIA ENCENDIDAS!");
+  }
+}
+
+class SistemaAlertas {
+  private dispositivos: DispositivoSeguridad[] = [];
+
+  agregar(dispositivo: DispositivoSeguridad): void {
+    this.dispositivos.push(dispositivo);
+  }
+
+  emergencia(): void {
+    this.dispositivos.forEach((d) => d.activar()); 
+  }
+}
+
+const sistema = new SistemaAlertas();
+sistema.agregar(new Alarma());
+sistema.agregar(new Aspersor());
+sistema.agregar(new Luz());
+sistema.emergencia();
